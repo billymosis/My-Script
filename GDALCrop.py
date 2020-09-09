@@ -11,25 +11,28 @@ gdal = r'C:/Program Files/QGIS 3.12/bin/'
 gdalTranslate = gdal+'gdal_translate.exe'
 src = r"D:/mrican/GIS/MERICAN UPDATE_240220.ecw"
 Folder = r"D:/mrican/LiDAR"
-DATA = r"D:\mrican\LiDAR\Sentul\Sentul.csv"
+DATA = r"C:\Users\Virama Karya\Desktop\List Inventori Mrican.xlsx"
 font = ImageFont.truetype("arial.ttf", 15)
 
 def Quote(item):
     return "\"" + item + "\""
 
 # Get data - reading the CSV file
-df = pd.read_csv(DATA,delimiter=',')
+
+Saluran = 'Tembeleng'
+df = pd.read_excel(DATA,sheet_name=Saluran)
 tuples = [tuple(x) for x in df.values]
-Saluran = 'Sentul'
+
+#print(df)
 
 for x in tuples:
-    X = x[1]
-    Y = x[2]
-    NamaFile = x[0]
-    print(NamaFile)
-    dst = f"{Folder}/{Saluran}/{NamaFile}.tif"
+    X = x[5]
+    Y = x[6]
+    NamaFile = x[2]
+    TipeBangunan = x[3]
+    dst = f"{Folder}/{Saluran}/{NamaFile}.JPG"
     wld = f"{Folder}/{Saluran}/{NamaFile}.wld"
-    cmd = f"-projwin {X-50} {Y+50} {X+50} {Y-50} -of GTiff -co COMPRESS=NONE -co BIGTIFF=IF_NEEDED"
+    cmd = f"-projwin {X-50} {Y+50} {X+50} {Y-50} -of JPEG -co QUALITY=100 -co BIGTIFF=IF_NEEDED"
     os.makedirs(os.path.dirname(dst),exist_ok=True)
 
     #Bikin WLD file untuk Projection
@@ -43,9 +46,8 @@ for x in tuples:
     #PIL
     img = Image.open(dst)
     size = img.size
-    print(size[1])
 
     draw = ImageDraw.Draw(img)
-    draw.text((10, size[1]-50),f"{NamaFile}",(0,0,0),font=font,align='left')
+    draw.text((10, size[1]-50),f"{NamaFile} / {TipeBangunan}",(0,0,0),font=font,align='left')
     draw.text((10, size[1]-30),f"{Saluran}",(0,0,0),font=font)
     img.save(dst)
