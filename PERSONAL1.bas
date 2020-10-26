@@ -109,7 +109,7 @@ Sub Dosomething()
 End Sub
 
 Sub PrintBangunan()
-    Dim Ws As Worksheet
+    Dim ws As Worksheet
     Dim fname As String
     Dim Directory As String
     Dim rg As Range
@@ -120,7 +120,7 @@ Sub PrintBangunan()
     Dim Q As Integer
     Dim O As Integer
     Dim Bgn As String
-    Set Ws = ActiveSheet
+    Set ws = ActiveSheet
     Directory = "D:\PDFX\"
     fname = ".pdf"
     LastRow = Cells(Rows.Count, 2).End(xlUp).Row + 6
@@ -130,11 +130,11 @@ Sub PrintBangunan()
         P = j - 53
         Q = 9 + i * 54
         O = Q - 54
-        Bgn = Replace(Replace(Ws.Cells(O, 14).Value, ":   ", ""), " / ", " ")
+        Bgn = Replace(Replace(ws.Cells(O, 14).Value, ":   ", ""), " / ", " ")
         If Bgn = "" Then
             Bgn = "Blank"
         End If
-        Set rg = Ws.Range(Cells(P, 1), Cells(j, 20))
+        Set rg = ws.Range(Cells(P, 1), Cells(j, 20))
         rg.ExportAsFixedFormat Type:=xlTypePDF, FileName:=Directory & "Bangunan " & Bgn & fname
         'Debug.Print I
         'Debug.Print rg.Address
@@ -144,7 +144,7 @@ Sub PrintBangunan()
     '    Range("A55:T108").PrintOut Copies:=1, PrintToFile:=True, Collate:=True, PrToFileName:=Directory & fname
 End Sub
 Sub PrintSaluran()
-    Dim Ws As Worksheet
+    Dim ws As Worksheet
     Dim fname As String
     Dim Directory As String
     Dim rg As Range
@@ -155,7 +155,7 @@ Sub PrintSaluran()
     Dim Q As Integer
     Dim O As Integer
     Dim Bgn As String
-    Set Ws = ActiveSheet
+    Set ws = ActiveSheet
     Directory = "D:\PDFX\"
     fname = ".pdf"
     LastRow = Cells(Rows.Count, 2).End(xlUp).Row + 6
@@ -165,11 +165,11 @@ Sub PrintSaluran()
         P = j - 53
         Q = 8 + i * 54
         O = Q - 54
-        Bgn = Replace(Replace(Ws.Cells(O, 36).Value, ":   ", ""), "/ ", "")
+        Bgn = Replace(Replace(ws.Cells(O, 36).Value, ":   ", ""), "/ ", "")
         If Bgn = "" Then
             Bgn = "Blank"
         End If
-        Set rg = Ws.Range(Cells(P, 21), Cells(j, 41))
+        Set rg = ws.Range(Cells(P, 21), Cells(j, 41))
         rg.ExportAsFixedFormat Type:=xlTypePDF, FileName:=Directory & "Saluran " & Bgn & fname
         'Debug.Print I
         'Debug.Print rg.Address
@@ -180,7 +180,7 @@ Sub PrintSaluran()
 End Sub
 
 Sub PrintSaluranNanang()
-    Dim Ws As Worksheet
+    Dim ws As Worksheet
     Dim fname As String
     Dim Directory As String
     Dim rg As Range
@@ -191,14 +191,14 @@ Sub PrintSaluranNanang()
     Dim Q As Integer
     Dim O As Integer
     Dim Bgn As String
-    Set Ws = ActiveSheet
+    Set ws = ActiveSheet
     Directory = "D:\PDFX\"
     fname = ".pdf"
-    Bgn = Ws.Name
+    Bgn = ws.Name
     If Bgn = "" Then
         Bgn = "Blank"
     End If
-    Set rg = Ws.Range(Cells(1, 1), Cells(53, 20))
+    Set rg = ws.Range(Cells(1, 1), Cells(53, 20))
     rg.ExportAsFixedFormat Type:=xlTypePDF, FileName:=Directory & "Saluran " & Bgn & fname
     'Debug.Print I
     'Debug.Print rg.Address
@@ -248,9 +248,9 @@ Sub Range_End_Method()
 End Sub
 
 Sub TestY()
-    Dim Ws As Worksheet
-    Set Ws = Sheets("B28 (SS.C)")
-    Debug.Print Ws.Name
+    Dim ws As Worksheet
+    Set ws = Sheets("B28 (SS.C)")
+    Debug.Print ws.Name
     End Sub
     Sub Pindah_DATA()
     Dim WbFrom, WbTo As Workbook
@@ -331,10 +331,10 @@ Sub Formula()
     '        "=(((R[-1]C[-6] - R[0]C[-6])^2+(R[-1]C[-5]-R[0]C[-5])^2)^0.5)*IF(R[-1]C[-5]<R[0]C[-5],-1,1)"
     '    ActiveCell.Offset(0, -1).Range("A1").Formula2R1C1 = _
     '        "=(R[0]C[-4])"
-    ActiveCell.Formula = "=(((" & ActiveCell.Offset(-1, -6).Address(True, True) & "-" & ActiveCell.Offset(0, -6).Address(False, False) & ")^2+(" _
+    ActiveCell.Offset(0, 1).Formula = "=(((" & ActiveCell.Offset(-1, -6).Address(True, True) & "-" & ActiveCell.Offset(0, -6).Address(False, False) & ")^2+(" _
                         & ActiveCell.Offset(-1, -5).Address(True, True) & "-" & ActiveCell.Offset(0, -5).Address(False, False) & ")^2)^0.5)*IF(" _
-                        & ActiveCell.Offset(-1, -5).Address(True, True) & "<" & ActiveCell.Offset(0, -5).Address(False, False) & ",1,-1)"
-    ActiveCell.Offset(0, 1).FormulaR1C1 = "=R[0]C[-5]"
+                        & ActiveCell.Offset(-1, -6).Address(True, True) & "<" & ActiveCell.Offset(0, -6).Address(False, False) & ",1,-1)"
+    ActiveCell.Offset(0, 0).FormulaR1C1 = "=R[0]C[-4]"
     ActiveCell.Offset(0, 2).FormulaR1C1 = "=R[0]C[-5]"
 End Sub
 Sub FlipColumns()
@@ -365,12 +365,15 @@ Sub FlipColumns()
     Next
  
     WorkRng.Formula = Arr
+    WorkRng.Sort Key1:=WorkRng.Range("B1"), Order1:=xlAscending, Header:=xlNo
+
     Application.ScreenUpdating = True
     Application.Calculation = xlCalculationAutomatic
  
 End Sub
 
 Sub CopyFlipTranspose()
+    Application.ScreenUpdating = False
     Selection.Copy
     ActiveCell.Offset(0, 4).Range("A1").Select
     Selection.PasteSpecial Paste:=xlPasteValues
@@ -414,8 +417,8 @@ Set i = 0
 End Sub
 
 Sub MinusElevasiPatok()
-	ActiveCell.Value = ActiveCell.Value - 0.25
-	ActiveCell.Offset(3, 0).Select
+        ActiveCell.Value = ActiveCell.Value - 0.25
+        ActiveCell.Offset(3, 0).Select
 End Sub
 
 Sub SwapRow()
@@ -426,18 +429,16 @@ End Sub
 
 Sub WriteCSVFile()
 Dim i As Integer
-Dim WS_Count As Integer
 
-WS_Count = ActiveWorkbook.Worksheets.Count
-For i = 1 To WS_Count
+
 Dim ws As Worksheet
 
-Set ws = ThisWorkbook.Worksheets(i)
+Set ws = ActiveSheet
      PathName = "" & ThisWorkbook.Path & "\" & ws.Name & ".csv"
     ws.Copy
-    ActiveWorkbook.SaveAs Filename:=PathName, _
+    ActiveWorkbook.SaveAs FileName:=PathName, _
         FileFormat:=xlCSV, CreateBackup:=False
-Next i
+
 
 End Sub
 
@@ -450,7 +451,7 @@ Sub AutoFill()
     Dim s As String
 
     Set rng1 = ActiveCell.Range("A1", "C1")
-    Set rng2 = ActiveCell.Offset(0, -3).Range("A1", "A20").Find("B16")
+    Set rng2 = ActiveCell.Offset(0, -3).Range("A1", "A25").Find("B21")
     i = rng2.Row - ActiveCell.Row
     Set rng = ActiveCell.Offset(0, 0).Range("A1", "C" & i)
     Set rng3 = ActiveCell.Offset(-1, 0).Range("A1", "C1")
@@ -461,5 +462,3 @@ Sub AutoFill()
    
     
 End Sub
-
-
