@@ -311,18 +311,25 @@ End Sub
 Sub Labeling()
     ActiveCell.Offset(2, -2).Range("A1").Select
     ActiveCell.FormulaR1C1 = "T1"
+    ActiveCell.Interior.ColorIndex = 45
     ActiveCell.Offset(0, 1).Range("A1").Select
     ActiveCell.FormulaR1C1 = "L"
+    ActiveCell.Interior.ColorIndex = 27
     ActiveCell.Offset(0, 1).Range("A1").Select
     ActiveCell.FormulaR1C1 = "D1L"
+    ActiveCell.Interior.ColorIndex = 27
     ActiveCell.Offset(0, 1).Range("A1").Select
     Selection.ClearContents
+    ActiveCell.Interior.ColorIndex = 27
     ActiveCell.Offset(0, 1).Range("A1").Select
     ActiveCell.FormulaR1C1 = "D1L"
+    ActiveCell.Interior.ColorIndex = 27
     ActiveCell.Offset(0, 1).Range("A1").Select
     ActiveCell.FormulaR1C1 = "L"
+    ActiveCell.Interior.ColorIndex = 27
     ActiveCell.Offset(0, 1).Range("A1").Select
     ActiveCell.FormulaR1C1 = "T1"
+    ActiveCell.Interior.ColorIndex = 45
     ActiveCell.Offset(1, -4).Range("A1").Select
 End Sub
 Sub Formula()
@@ -382,14 +389,15 @@ Sub CopyFlipTranspose()
     ActiveCell.Offset(0, 14).Range("A1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, _
         SkipBlanks:=False, Transpose:=True
-    ActiveCell.Offset(-1, -24).Range("A1:C1").Select
+    ActiveCell.Offset(0, -24).Range("A1:C1").Select
         Selection.Copy
-    ActiveCell.Offset(1, 15).Range("A1").Select
+    ActiveCell.Offset(0, 15).Range("A1").Select
         Selection.PasteSpecial Paste:=xlPasteValues
-    ActiveCell.Offset(-1, -12).Range("A1").Select
+    ActiveCell.Offset(0, -12).Range("A1").Select
         Selection.Copy
-    ActiveCell.Offset(1, 11).Range("A1").Select
+    ActiveCell.Offset(0, 11).Range("A1").Select
         Selection.PasteSpecial Paste:=xlPasteValues
+    ActiveCell.Offset(0, -8).Range("A1").Select
 End Sub
 
 Sub Oye()
@@ -442,6 +450,21 @@ Set ws = ActiveSheet
 
 End Sub
 
+Sub WriteTXTFile()
+Dim i As Integer
+
+
+Dim ws As Worksheet
+
+Set ws = ActiveSheet
+     PathName = "" & ThisWorkbook.Path & "\" & ws.Name & ".txt"
+    ws.Copy
+    ActiveWorkbook.SaveAs FileName:=PathName, _
+        FileFormat:=xlText, CreateBackup:=False
+
+
+End Sub
+
 Sub AutoFill()
     Dim rng As Range
     Dim rng2 As Range
@@ -461,4 +484,37 @@ Sub AutoFill()
     rng1.AutoFill Destination:=rng, Type:=xlFillDefault
    
     
+End Sub
+
+Sub swapper()
+
+Dim i, j, k As Long
+Dim ws As Worksheet
+Dim Range1, Range2 As Range
+Dim tmp1, tmp2 As Variant
+
+Set ws = ActiveSheet
+j = ws.Cells(Rows.Count, 1).End(xlUp).Row + 2
+k = 3
+
+For i = 9 To j / 2
+
+    If i Mod 3 = 0 Then
+        k = 2
+    ElseIf i Mod 3 = 1 Then
+        k = 0
+    ElseIf i Mod 3 = 2 Then
+        k = -2
+    End If
+
+    Set Range1 = Rows(i + k).Cells
+    Set Range2 = Rows(j + 9 - i).Cells
+    tmp1 = Range1.Value
+    tmp2 = Range2.Value
+    Range1.Value = tmp2
+    Range2.Value = tmp1
+
+Next i
+
+
 End Sub
