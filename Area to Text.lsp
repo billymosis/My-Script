@@ -1,4 +1,71 @@
-(defun c:a2 (/ a i s apt thetext mspace) 
+(defun c:a3 (/ a i s mspace pick elist area) 
+  (if 
+    (setq s (ssget 
+              '((0 . "CIRCLE,ELLIPSE,*POLYLINE,SPLINE")
+                (-4 . "<NOT")
+                (-4 . "<AND")
+                (0 . "POLYLINE")
+                (-4 . "&")
+                (70 . 80)
+                (-4 . "AND>")
+                (-4 . "NOT>")
+               )
+            )
+    )
+    (progn 
+      (setq mspace (vla-get-modelspace (vla-get-activedocument (vlax-get-acad-object ) ) ))
+      (setq a 0.0)
+      (repeat (setq i (sslength s)) 
+        (setq a (+ a (vlax-curve-getarea (ssname s (setq i (1- i))))))
+      )
+      (princ "\nTotal Area: ")
+      (setq area (rtos a 2 2))
+	  (princ area)
+      (setq pick (entsel "\nSelect text: "))
+      (setq elist (entget (car pick))) ; get entity database
+      (entmod (subst (cons 1 area) (assoc 1 elist) elist))
+    )
+  )
+  (princ)
+)
+
+
+(defun c:a2 (/ a s area pick elist mspace) 
+  (if 
+    (setq s (ssget ":S" '((0 . "CIRCLE,ELLIPSE,*POLYLINE,SPLINE")
+                (-4 . "<NOT")
+                (-4 . "<AND")
+                (0 . "POLYLINE")
+                (-4 . "&")
+                (70 . 80)
+                (-4 . "AND>")
+                (-4 . "NOT>")
+               ))
+   )
+    (progn 
+      (setq mspace (vla-get-modelspace (vla-get-activedocument (vlax-get-acad-object ) ) ))
+      (setq a 0.0)
+      (setq a (vlax-curve-getarea (ssname s 0)))
+      
+      (princ "\nTotal Area: ")
+      (setq area (rtos a 2 2))
+	  (princ area)
+      (setq pick (entsel "\nSelect text: "))
+      (setq elist (entget (car pick))) ; get entity database
+      (entmod (subst (cons 1 area) (assoc 1 elist) elist))
+    )
+	
+  )
+  (princ)
+)
+
+  (defun C:DXF_LST ()
+(mapcar 'print (entget (car (entsel))))
+(textscr)
+(princ)
+)
+
+(defun c:a1 (/ a i s apt thetext mspace) 
   (if 
     (setq s (ssget 
               '((0 . "CIRCLE,ELLIPSE,*POLYLINE,SPLINE")
@@ -21,10 +88,16 @@
       (princ "\nTotal Area: ")
       (princ (rtos a 2))
       (setq apt (getpoint "\nInsertion Point: "))
-      (setq thetext (vla-AddText mspace (rtos a 2) (vlax-3d-point apt) 0.25))
+      (setq thetext (vla-AddText mspace (rtos a 2 2) (vlax-3d-point apt) 0.25))
     )
   )
   (princ)
 )
 (vl-load-com)
+(princ)
+
+
+
+(princ "\n\n command a2 untuk hitungan single dan a3 untuk hitungan multiple\n select objek yang akan dihitung areanya lalu select text yang akan direplace valuenya\n")
+(princ "\n TIDAK BISA UNTUK HATCH, hanya polyline saja")
 (princ)
